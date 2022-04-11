@@ -18,7 +18,7 @@ enum class EGameplayState : uint8 {
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class CESHI_API AGM_RainyBlue : public AGameModeBase
 {
 	GENERATED_BODY()
