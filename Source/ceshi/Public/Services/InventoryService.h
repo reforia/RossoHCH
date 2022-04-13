@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Engine/DataTable.h"
+#include "Services/ServiceBase.h"
 #include "InventoryService.generated.h"
 
 
@@ -139,12 +140,13 @@ public:
  * 
  */
 UCLASS(Blueprintable)
-class CESHI_API UInventoryService : public UObject
+class CESHI_API UInventoryService : public UServiceBase
 {
 	GENERATED_BODY()
 
 public:
-	virtual ~UInventoryService();
+	UInventoryService();
+	~UInventoryService();
 
 	UFUNCTION(BlueprintCallable, Category = "ItemOperation")
 	bool AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count);

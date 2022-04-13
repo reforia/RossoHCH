@@ -5,6 +5,11 @@
 #include "Components/CAC_InventoryComponent.h"
 #include "Engine/Texture2D.h"
 
+UInventoryService::UInventoryService()
+{
+
+}
+
 UInventoryService::~UInventoryService()
 {
 	for (auto inventoryComp : GetListOfAllInventoryComps())
