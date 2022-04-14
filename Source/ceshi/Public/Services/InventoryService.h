@@ -169,7 +169,7 @@ private:
 	FStruct_Item* GetInventoryItemByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID);
 
 private:
-	TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>*> InventoriesList;
+	TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>> InventoriesList;
 
 
 public:

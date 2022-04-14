@@ -7,16 +7,16 @@
 
 UInventoryService::UInventoryService()
 {
-
+	InventoriesList = TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>>();
 }
 
 UInventoryService::~UInventoryService()
 {
-	for (auto inventoryComp : GetListOfAllInventoryComps())
-	{
-		delete InventoriesList[inventoryComp];
-		InventoriesList[inventoryComp] = nullptr;
-	}
+	//for (auto inventoryComp : GetListOfAllInventoryComps())
+	//{
+	//	delete InventoriesList[inventoryComp];
+	//	InventoriesList[inventoryComp] = nullptr;
+	//}
 
 }
 
@@ -93,7 +93,7 @@ void UInventoryService::RegisterInventoryComponent(UCAC_InventoryComponent* inve
 	if (DoesServiceContainComponent(inventoryCompRef))
 		return; // Already Registered before
 
-	InventoriesList.Add(inventoryCompRef, new TArray<FStruct_ItemWithCount>());
+	InventoriesList.Add(inventoryCompRef, TArray<FStruct_ItemWithCount>());
 }
 
 FString UInventoryService::GetDebugLogInfo()
@@ -119,6 +119,11 @@ FString UInventoryService::GetDebugLogInfo()
 TArray<UCAC_InventoryComponent*> UInventoryService::GetListOfAllInventoryComps()
 {
 	TArray<UCAC_InventoryComponent*> result;
+
+	int32 a = InventoriesList.Num();
+	if (a == 0)
+		return result;
+
 	InventoriesList.GetKeys(result);
 	return result;
 }
@@ -133,7 +138,7 @@ TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByComponen
 	if (!DoesServiceContainComponent(inventoryCompRef))
 		return nullptr;
 
-	return InventoriesList[inventoryCompRef];
+	return &InventoriesList[inventoryCompRef];
 }
 
 FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID)
@@ -164,7 +169,6 @@ FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByComponent(c
 
 FStruct_Item* UInventoryService::GetInventoryItemByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID)
 {
-
 	auto items = GetInventoryItemWithCountByComponent(inventoryCompRef, ItemID);
 
 	if (!items)

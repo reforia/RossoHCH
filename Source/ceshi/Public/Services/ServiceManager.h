@@ -30,14 +30,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Service Manager")
 	UInventoryService* GetInventoryService(); //TeST
 
-	TArray<UServiceBase*> GetServices() { return Services; };
+	TArray<UServiceBase*>* GetServices() { return Services; };
 
 	template<typename T> T* GetServiceByClassT() 
 	{
-		for (UServiceBase* service : GetServices())
+		for (auto& service : *GetServices())
 		{
-			if(static_cast<T*>(service))
-				return (T*)service;
+			T* serviceTypeObject = static_cast<T*>(service);
+			if(serviceTypeObject)
+				return serviceTypeObject;
 		}
 		return (T*)nullptr;
 	}
@@ -47,6 +48,5 @@ public:
 	TArray<TSubclassOf<UServiceBase>> RegisteredServiceList;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "Service Manager")
-	TArray<UServiceBase*> Services;
+	TArray<UServiceBase*>* Services = nullptr;
 };

@@ -7,10 +7,13 @@
 
 UServiceManager::UServiceManager()
 {
+	Services = new TArray<UServiceBase*>();
 }
 
 UServiceManager::~UServiceManager()
 {
+	delete Services;
+	Services = nullptr;
 }
 
 void UServiceManager::InitializeServices()
@@ -20,13 +23,13 @@ void UServiceManager::InitializeServices()
 		if (!service->IsValidLowLevelFast()) { continue; }
 
 		auto newServiceObject = NewObject<UServiceBase>(this, service->GetFName(), RF_NoFlags, service->GetDefaultObject());
-		Services.Add(newServiceObject);
+		Services->Add(newServiceObject);
 	}
 }
 
 UServiceBase* UServiceManager::GetServiceByClass(TSubclassOf<UServiceBase> testAgainstClass)
 {
-	for (UServiceBase* service : Services)
+	for (UServiceBase* service : *Services)
 	{
 		auto nameA = service->GetName();
 		auto nameB = testAgainstClass->GetName();
