@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ServiceBase.generated.h"
 
-
+class UServiceManager;
 /**
  * 
  */
@@ -18,6 +18,5 @@ public:
 	UServiceBase();
 	virtual ~UServiceBase();
 
-protected:
-	virtual void ServiceConstruction();
+	virtual void ServiceConstruction(UServiceManager* owner);
 };

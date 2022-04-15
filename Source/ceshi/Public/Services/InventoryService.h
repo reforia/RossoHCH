@@ -132,8 +132,24 @@ public:
 		return ItemRef == other.ItemRef && Count == other.Count;
 	}
 
+	UPROPERTY()
 	FStruct_Item ItemRef;
+	
+	UPROPERTY()
 	int32 Count;
+};
+
+
+USTRUCT()
+struct Ftest32
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	Ftest32() :a(0) {}
+
+	UPROPERTY()
+	int32 a = 0;
 };
 
 /**
@@ -145,7 +161,6 @@ class CESHI_API UInventoryService : public UServiceBase
 	GENERATED_BODY()
 
 public:
-	UInventoryService();
 	~UInventoryService();
 
 	UFUNCTION(BlueprintCallable, Category = "ItemOperation")
@@ -156,6 +171,8 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "InventoryHelper")
 	FString GetDebugLogInfo();
+
+	void ServiceConstruction(UServiceManager* owner) override;
 
 private:
 	TArray<UCAC_InventoryComponent*> GetListOfAllInventoryComps();
@@ -169,11 +186,11 @@ private:
 	FStruct_Item* GetInventoryItemByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID);
 
 private:
-	TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>> InventoriesList;
-
+	TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>*> InventoriesList;
 
 public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	class UDataTable* ItemDatabase;
+
 
 };

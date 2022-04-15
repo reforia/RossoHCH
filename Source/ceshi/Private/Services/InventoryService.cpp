@@ -4,19 +4,22 @@
 #include "Services/InventoryService.h"
 #include "Components/CAC_InventoryComponent.h"
 #include "Engine/Texture2D.h"
+#include "Services/ServiceManager.h"
 
-UInventoryService::UInventoryService()
-{
-	InventoriesList = TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>>();
+void UInventoryService::ServiceConstruction(UServiceManager* owner)
+{	
+	InventoriesList = TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>*>();
+	
+	UServiceBase::ServiceConstruction(owner);
 }
 
 UInventoryService::~UInventoryService()
 {
-	//for (auto inventoryComp : GetListOfAllInventoryComps())
-	//{
-	//	delete InventoriesList[inventoryComp];
-	//	InventoriesList[inventoryComp] = nullptr;
-	//}
+	for (auto inventoryComp : GetListOfAllInventoryComps())
+	{
+		delete InventoriesList[inventoryComp];
+		InventoriesList[inventoryComp] = nullptr;
+	}
 
 }
 
@@ -34,7 +37,7 @@ bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* in
 	{
 		// We need to add it into the array list
 		if (count <= 0)
-			return false;
+			return true;
 
 		auto itemsList = GetInventoryItemListByComponent(inventoryCompRef);
 		if (!itemsList)
@@ -93,7 +96,7 @@ void UInventoryService::RegisterInventoryComponent(UCAC_InventoryComponent* inve
 	if (DoesServiceContainComponent(inventoryCompRef))
 		return; // Already Registered before
 
-	InventoriesList.Add(inventoryCompRef, TArray<FStruct_ItemWithCount>());
+	InventoriesList.Add(inventoryCompRef, new TArray<FStruct_ItemWithCount>());
 }
 
 FString UInventoryService::GetDebugLogInfo()
@@ -138,7 +141,7 @@ TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByComponen
 	if (!DoesServiceContainComponent(inventoryCompRef))
 		return nullptr;
 
-	return &InventoriesList[inventoryCompRef];
+	return InventoriesList[inventoryCompRef];
 }
 
 FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID)
@@ -176,3 +179,5 @@ FStruct_Item* UInventoryService::GetInventoryItemByComponent(const UCAC_Inventor
 
 	return &items->ItemRef;
 }
+
+
