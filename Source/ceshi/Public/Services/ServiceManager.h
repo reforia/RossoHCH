@@ -25,9 +25,6 @@ public:
 	void InitializeServices();
 
 	UFUNCTION(BlueprintPure, Category = "Service Manager")
-	UServiceBase* GetServiceByClass(TSubclassOf<UServiceBase> testAgainstClass);
-
-	UFUNCTION(BlueprintPure, Category = "Service Manager")
 	UInventoryService* GetInventoryService(); //TeST
 
 	TArray<UServiceBase*> GetServices() { return Services; };

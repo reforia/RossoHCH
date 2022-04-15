@@ -22,18 +22,15 @@ void UServiceManager::InitializeServices()
 
 		((UServiceBase*)(service->GetDefaultObject()))->ServiceConstruction(this);
 	}
-}
 
-UServiceBase* UServiceManager::GetServiceByClass(TSubclassOf<UServiceBase> testAgainstClass)
-{
-	for (UServiceBase* service : Services)
-	{
-		auto nameA = service->GetName();
-		auto nameB = testAgainstClass->GetName();
-		if (nameB == nameA)
-			return service;
-	}
-	return nullptr;
+	//for (TSubclassOf<UServiceBase> service : RegisteredServiceList)
+	//{
+	//	if (!service->IsValidLowLevelFast()) { continue; }
+
+	//	UServiceBase* serviceInst = NewObject<UServiceBase>(this, service->GetFName(), RF_NoFlags, service->GetDefaultObject());
+	//	serviceInst->ServiceConstruction();
+	//	Services.Add(serviceInst);
+	//}
 }
 
 UInventoryService* UServiceManager::GetInventoryService()
