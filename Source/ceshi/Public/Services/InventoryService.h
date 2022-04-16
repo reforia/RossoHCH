@@ -12,6 +12,7 @@
 class UCAC_InventoryComponent;
 class UTexture2D;
 class UDataTable;
+class UPaperSprite;
 
 USTRUCT(BlueprintType)
 struct FStruct_Item : public FTableRowBase
@@ -30,7 +31,7 @@ public:
 		Description(FText::FromString(TEXT(""))),
 		Stackable(true),
 		UIIcon(nullptr),
-		StaticMesh(nullptr)
+		Sprite(nullptr)
 	{ }
 
 	inline FStruct_Item& operator=(const FStruct_Item& other)
@@ -42,7 +43,7 @@ public:
 			Description = other.Description;
 			Stackable = other.Stackable;
 			UIIcon = other.UIIcon;
-			StaticMesh = other.StaticMesh;
+			Sprite = other.Sprite;
 		}
 		return *this;
 	}
@@ -52,14 +53,14 @@ public:
 		if (*this != other)
 		{
 			delete UIIcon;
-			delete StaticMesh;
+			//delete Sprite;
 
 			ID = other.ID;
 			Name = other.Name;
 			Description = other.Description;
 			Stackable = other.Stackable;
 			UIIcon = other.UIIcon;
-			StaticMesh = other.StaticMesh;
+			Sprite = other.Sprite;
 		}
 		return *this;
 	}
@@ -87,7 +88,7 @@ public:
 		UTexture2D* UIIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMesh* StaticMesh = nullptr;
+		UPaperSprite* Sprite;
 };
 
 USTRUCT(BlueprintType)
