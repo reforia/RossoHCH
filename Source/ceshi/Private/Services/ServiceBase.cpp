@@ -13,9 +13,23 @@ UServiceBase::~UServiceBase()
 {
 }
 
+FString UServiceBase::GetDebugLogInfo()
+{
+	return "";
+}
+
 void UServiceBase::ServiceConstruction(UServiceManager* owner)
 {
 	if (owner)
 		owner->Services.Add(this);
 }
 
+void UServiceBase::ServiceBeginPlay()
+{
+
+}
+
+void UServiceBase::ServiceShutdown()
+{
+
+}

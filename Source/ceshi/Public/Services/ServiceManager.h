@@ -23,20 +23,30 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Service Manager")
 	void InitializeServices();
+	
+	UFUNCTION()
+	void TriggerBeginPlayForServices();
 
-	UFUNCTION(BlueprintPure, Category = "Service Manager")
-	UInventoryService* GetInventoryService(); //TeST
+	UFUNCTION()
+	void ShutdownServices();
 
 	TArray<UServiceBase*> GetServices() { return Services; };
 
 	template<typename T> T* GetServiceByClassT() 
 	{
 		for (UServiceBase* service : GetServices())
-			return static_cast<T*>(service);
+		{
+			//if(service->GetClass()->GetFName() == T::StaticClass.GetFName())
+			FString a = service->GetClass()->GetName();
+			FString b = T::StaticClass()->GetName();
+
+			// THIS IS A GIANTTTT HAAAACCCKKK!!!!!!!!!
+			if(a.Contains(b))
+				return static_cast<T*>(service);
+		}
 
 		return (T*)nullptr;
 	}
-
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Service Manager")

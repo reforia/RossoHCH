@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Services/InventoryService.h"
+#include "Services/Inventory/InventoryService.h"
 #include "Components/CAC_InventoryComponent.h"
 #include "Engine/Texture2D.h"
 #include "Services/ServiceManager.h"
@@ -13,14 +13,13 @@ void UInventoryService::ServiceConstruction(UServiceManager* owner)
 	UServiceBase::ServiceConstruction(owner);
 }
 
-UInventoryService::~UInventoryService()
+void UInventoryService::ServiceShutdown()
 {
 	for (auto inventoryComp : GetListOfAllInventoryComps())
 	{
 		delete InventoriesList[inventoryComp];
 		InventoriesList[inventoryComp] = nullptr;
 	}
-
 }
 
 bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count)

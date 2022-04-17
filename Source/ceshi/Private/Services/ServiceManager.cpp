@@ -3,7 +3,8 @@
 #include "Services/ServiceManager.h"
 #include "Services/ServiceBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Services/InventoryService.h"
+#include "Services/Inventory/InventoryService.h"
+#include "../GameplayCore/GI_Core.h"
 
 UServiceManager::UServiceManager()
 {
@@ -22,18 +23,17 @@ void UServiceManager::InitializeServices()
 
 		((UServiceBase*)(service->GetDefaultObject()))->ServiceConstruction(this);
 	}
-
-	//for (TSubclassOf<UServiceBase> service : RegisteredServiceList)
-	//{
-	//	if (!service->IsValidLowLevelFast()) { continue; }
-
-	//	UServiceBase* serviceInst = NewObject<UServiceBase>(this, service->GetFName(), RF_NoFlags, service->GetDefaultObject());
-	//	serviceInst->ServiceConstruction();
-	//	Services.Add(serviceInst);
-	//}
 }
 
-UInventoryService* UServiceManager::GetInventoryService()
+void UServiceManager::TriggerBeginPlayForServices()
 {
-	return GetServiceByClassT<UInventoryService>();
+	for (UServiceBase* service : GetServices())
+		service->ServiceBeginPlay();
 }
+
+void UServiceManager::ShutdownServices()
+{
+	for (UServiceBase* service : GetServices())
+		service->ServiceShutdown();
+}
+

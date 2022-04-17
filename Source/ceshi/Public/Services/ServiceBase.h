@@ -18,5 +18,15 @@ public:
 	UServiceBase();
 	virtual ~UServiceBase();
 
+	UFUNCTION(BlueprintPure, Category = "ServiceHelper")
+	virtual FString GetDebugLogInfo();
+
+	UFUNCTION()
 	virtual void ServiceConstruction(UServiceManager* owner);
+
+	UFUNCTION()
+	virtual void ServiceBeginPlay();
+
+	UFUNCTION()
+	virtual void ServiceShutdown();
 };

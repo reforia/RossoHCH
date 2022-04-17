@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Engine/DataTable.h"
 #include "Services/ServiceBase.h"
+#include "Engine/DataTable.h"
 #include "InventoryService.generated.h"
 
 
@@ -162,18 +162,17 @@ class CESHI_API UInventoryService : public UServiceBase
 	GENERATED_BODY()
 
 public:
-	~UInventoryService();
-
 	UFUNCTION(BlueprintCallable, Category = "ItemOperation")
 	bool AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count);
 
 	UFUNCTION(BlueprintCallable, Category = "Construction")
 	void RegisterInventoryComponent(UCAC_InventoryComponent* inventoryCompRef);
 
-	UFUNCTION(BlueprintPure, Category = "InventoryHelper")
-	FString GetDebugLogInfo();
+	FString GetDebugLogInfo() override;
 
 	void ServiceConstruction(UServiceManager* owner) override;
+
+	void ServiceShutdown() override;
 
 private:
 	TArray<UCAC_InventoryComponent*> GetListOfAllInventoryComps();
