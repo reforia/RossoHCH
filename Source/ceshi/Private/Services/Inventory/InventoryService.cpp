@@ -17,9 +17,9 @@ void UInventoryService::ServiceShutdown()
 {
 	for (auto inventoryComp : GetListOfAllInventoryComps())
 	{
-		delete InventoriesList[inventoryComp];
-		InventoriesList[inventoryComp] = nullptr;
+		ResetIntentoryEntry(inventoryComp);
 	}
+	InventoriesList.Reset();
 }
 
 bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count)
@@ -98,6 +98,17 @@ void UInventoryService::RegisterInventoryComponent(UCAC_InventoryComponent* inve
 	InventoriesList.Add(inventoryCompRef, new TArray<FStruct_ItemWithCount>());
 }
 
+void UInventoryService::ShutDownInventoryComponent(UCAC_InventoryComponent* inventoryCompRef)
+{
+	if (!inventoryCompRef)
+		return;
+
+	if (!DoesServiceContainComponent(inventoryCompRef))
+		return;
+
+	ResetIntentoryEntry(inventoryCompRef);
+}
+
 FString UInventoryService::GetDebugLogInfo()
 {
 	FString result;
@@ -133,6 +144,26 @@ TArray<UCAC_InventoryComponent*> UInventoryService::GetListOfAllInventoryComps()
 bool UInventoryService::DoesServiceContainComponent(const UCAC_InventoryComponent* inventoryCompRef)
 {
 	return GetListOfAllInventoryComps().Contains(inventoryCompRef);
+}
+
+void UInventoryService::ClearIllegalInventoriesEntries()
+{
+	for (auto inventoryComp : GetListOfAllInventoryComps())
+	{
+		if(!IsValid(inventoryComp))
+			
+			InventoriesList[inventoryComp] = nullptr;
+	}
+}
+
+void UInventoryService::ResetIntentoryEntry(UCAC_InventoryComponent* CompRef)
+{
+	if (!CompRef)
+		return;
+
+	delete InventoriesList[CompRef];
+	InventoriesList[CompRef] = nullptr;
+	InventoriesList.Remove(CompRef);
 }
 
 TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByComponent(const UCAC_InventoryComponent* inventoryCompRef)

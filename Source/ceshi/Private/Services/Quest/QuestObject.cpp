@@ -2,6 +2,7 @@
 
 
 #include "Services/Quest/QuestObject.h"
+#include "DelayAction.h"
 
 void UQuestObject::SetCurrentQuestState(EQuestState newState)
 {
@@ -43,4 +44,26 @@ class UWorld* UQuestObject::GetWorld() const
 	}
 
 	return nullptr;
+}
+
+
+void UQuestObject::QuestDelay(UObject* WorldContextObject, float Duration /*= 2.f*/)
+{
+	if (UWorld* World = this->GetWorld())
+	{
+		FLatentActionManager& LatentActionManager = World->GetLatentActionManager();
+		FLatentActionInfo LatentInfo;
+		LatentInfo.CallbackTarget = WorldContextObject;
+		LatentInfo.ExecutionFunction = TEXT("OnDelayFinished");
+		LatentInfo.Linkage = 0;
+		LatentInfo.UUID = FMath::Rand();
+		LatentActionManager.AddNewAction(WorldContextObject, LatentInfo.UUID, new FDelayAction(Duration, LatentInfo));
+
+	}
+
+}
+
+void UQuestObject::OnDelayFinished()
+{
+
 }

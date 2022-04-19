@@ -63,6 +63,12 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 		bool GetTest(const UObject* WorldContextObject) {return true;};
 
+	UFUNCTION(BlueprintCallable, Category = "Quest|Utilities", meta = (Latent, Duration="2.0", Keywords="sleep"))
+	void QuestDelay(UObject* WorldContextObject, float Duration = 2.f);
+
+	UFUNCTION()
+	void OnDelayFinished();
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestStateChangedEvent OnQuestStateChanged;

@@ -168,6 +168,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Construction")
 	void RegisterInventoryComponent(UCAC_InventoryComponent* inventoryCompRef);
 
+	UFUNCTION(BlueprintCallable, Category = "Construction")
+	void ShutDownInventoryComponent(UCAC_InventoryComponent* inventoryCompRef);
+
+	UFUNCTION()
+	void ClearIllegalInventoriesEntries();
+
 	FString GetDebugLogInfo() override;
 
 	void ServiceConstruction(UServiceManager* owner) override;
@@ -175,9 +181,14 @@ public:
 	void ServiceShutdown() override;
 
 private:
+	UFUNCTION()
 	TArray<UCAC_InventoryComponent*> GetListOfAllInventoryComps();
 
+	UFUNCTION()
 	bool DoesServiceContainComponent(const UCAC_InventoryComponent* inventoryCompRef);
+
+	UFUNCTION()
+	void ResetIntentoryEntry(UCAC_InventoryComponent* CompRef);
 
 	TArray<FStruct_ItemWithCount>* GetInventoryItemListByComponent(const UCAC_InventoryComponent* inventoryCompRef);
 
