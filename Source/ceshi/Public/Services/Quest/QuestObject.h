@@ -63,11 +63,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 		bool GetTest(const UObject* WorldContextObject) {return true;};
 
-	UFUNCTION(BlueprintCallable, Category = "Quest|Utilities", meta = (Latent, Duration="2.0", Keywords="sleep"))
-	void QuestDelay(UObject* WorldContextObject, float Duration = 2.f);
+	UFUNCTION(BlueprintCallable, Category = "Quest|Utilities", meta = (Latent, LatentInfo = "LatentInfo", Duration = "0.2", Keywords = "sleep"))
+	void QuestDelay(float Duration, struct FLatentActionInfo LatentInfo);
 
-	UFUNCTION()
-	void OnDelayFinished();
 
 public:
 	UPROPERTY(BlueprintAssignable)
