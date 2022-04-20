@@ -8,8 +8,6 @@
 #include "Engine/DataTable.h"
 #include "InventoryService.generated.h"
 
-
-class UCAC_InventoryComponent;
 class UTexture2D;
 class UDataTable;
 class UPaperSprite;
@@ -26,24 +24,24 @@ public:
 	}
 	
 	FStruct_Item()
-		: ID(""),
-		Name(FText::FromString(TEXT(""))),
-		Description(FText::FromString(TEXT(""))),
-		Stackable(true),
-		UIIcon(nullptr),
-		Sprite(nullptr)
+		: myID(""),
+		myName(FText::FromString(TEXT(""))),
+		myDescription(FText::FromString(TEXT(""))),
+		myStackable(true),
+		myUIIcon(nullptr),
+		mySprite(nullptr)
 	{ }
 
 	inline FStruct_Item& operator=(const FStruct_Item& other)
 	{
 		if (*this != other)
 		{
-			ID = other.ID;
-			Name = other.Name;
-			Description = other.Description;
-			Stackable = other.Stackable;
-			UIIcon = other.UIIcon;
-			Sprite = other.Sprite;
+			myID = other.myID;
+			myName = other.myName;
+			myDescription = other.myDescription;
+			myStackable = other.myStackable;
+			myUIIcon = other.myUIIcon;
+			mySprite = other.mySprite;
 		}
 		return *this;
 	}
@@ -52,43 +50,43 @@ public:
 	{
 		if (*this != other)
 		{
-			delete UIIcon;
+			delete myUIIcon;
 			//delete Sprite;
 
-			ID = other.ID;
-			Name = other.Name;
-			Description = other.Description;
-			Stackable = other.Stackable;
-			UIIcon = other.UIIcon;
-			Sprite = other.Sprite;
+			myID = other.myID;
+			myName = other.myName;
+			myDescription = other.myDescription;
+			myStackable = other.myStackable;
+			myUIIcon = other.myUIIcon;
+			mySprite = other.mySprite;
 		}
 		return *this;
 	}
 	inline bool operator==(const FStruct_Item & other)
 	{
-		return ID == other.ID;
+		return myID == other.myID;
 	}
 	inline bool operator!=(const FStruct_Item& other)
 	{
-		return ID != other.ID;
+		return myID != other.myID;
 	}
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString ID = "";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ID"))
+	FString myID = "";
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FText Name = FText::FromString(TEXT(""));
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Name"))
+	FText myName = FText::FromString(TEXT(""));
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FText Description = FText::FromString(TEXT(""));
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Description"))
+	FText myDescription = FText::FromString(TEXT(""));
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool Stackable = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Stackable"))
+	bool myStackable = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UTexture2D* UIIcon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "UIIcon"))
+	UTexture2D* myUIIcon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperSprite* Sprite;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Sprite"))
+	UPaperSprite* mySprite;
 };
 
 USTRUCT(BlueprintType)
@@ -98,24 +96,24 @@ struct FStruct_ItemWithCount
 
 public:
 	FStruct_ItemWithCount()
-		: ItemRef(),Count(1)
+		: myItemRef(),myCount(1)
 	{}
 	FStruct_ItemWithCount(const FStruct_ItemWithCount& other) 
 	{
 		*this = other;
 	}
 	FStruct_ItemWithCount(FStruct_Item* otherItem) 
-		: ItemRef(*otherItem),Count(1)
+		: myItemRef(*otherItem),myCount(1)
 	{}
 	FStruct_ItemWithCount(FStruct_Item* otherItem, int32 otherCount)
-		: ItemRef(*otherItem), Count(otherCount)
+		: myItemRef(*otherItem), myCount(otherCount)
 	{}
 	inline FStruct_ItemWithCount& operator=(const FStruct_ItemWithCount& other)
 	{
 		if (this != &other)
 		{
-			ItemRef = other.ItemRef;
-			Count = other.Count;
+			myItemRef = other.myItemRef;
+			myCount = other.myCount;
 		}
 		return *this;
 	}
@@ -123,34 +121,21 @@ public:
 	{
 		if (this != &other)
 		{
-			ItemRef = other.ItemRef;
-			Count = other.Count;
+			myItemRef = other.myItemRef;
+			myCount = other.myCount;
 		}
 		return *this;
 	}
 	inline bool operator==(const FStruct_ItemWithCount& other)
 	{
-		return ItemRef == other.ItemRef && Count == other.Count;
+		return myItemRef == other.myItemRef && myCount == other.myCount;
 	}
 
 	UPROPERTY()
-	FStruct_Item ItemRef;
+	FStruct_Item myItemRef;
 	
 	UPROPERTY()
-	int32 Count;
-};
-
-
-USTRUCT()
-struct Ftest32
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	Ftest32() :a(0) {}
-
-	UPROPERTY()
-	int32 a = 0;
+	int32 myCount;
 };
 
 /**
@@ -163,16 +148,10 @@ class CESHI_API UInventoryService : public UServiceBase
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "ItemOperation")
-	bool AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count);
+	bool AddObjectIntoInventory(const FName inventoryID, const FName itemID, const int32 count);
 
 	UFUNCTION(BlueprintCallable, Category = "Construction")
-	void RegisterInventoryComponent(UCAC_InventoryComponent* inventoryCompRef);
-
-	UFUNCTION(BlueprintCallable, Category = "Construction")
-	void ShutDownInventoryComponent(UCAC_InventoryComponent* inventoryCompRef);
-
-	UFUNCTION()
-	void ClearIllegalInventoriesEntries();
+	void RegisterInventoryID(FName inventoryID);
 
 	FString GetDebugLogInfo() override;
 
@@ -182,26 +161,26 @@ public:
 
 private:
 	UFUNCTION()
-	TArray<UCAC_InventoryComponent*> GetListOfAllInventoryComps();
+	TArray<FName> GetListOfAllInventoryIDs();
 
 	UFUNCTION()
-	bool DoesServiceContainComponent(const UCAC_InventoryComponent* inventoryCompRef);
+	bool DoesServiceContainInventoryID(const FName inventoryID);
 
 	UFUNCTION()
-	void ResetIntentoryEntry(UCAC_InventoryComponent* CompRef);
+	void ResetIntentoryEntry(FName inventoryID);
 
-	TArray<FStruct_ItemWithCount>* GetInventoryItemListByComponent(const UCAC_InventoryComponent* inventoryCompRef);
+	TArray<FStruct_ItemWithCount>* GetInventoryItemListByInventoryID(const FName inventoryID);
 
-	FStruct_ItemWithCount* GetInventoryItemWithCountByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID);
+	FStruct_ItemWithCount* GetInventoryItemWithCountByInventoryID(const FName inventoryID, FName itemID);
 
-	FStruct_Item* GetInventoryItemByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID);
+	FStruct_Item* GetInventoryItemByInventoryID(const FName inventoryID, FName itemID);
 
 private:
-	TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>*> InventoriesList;
+	TMap<FName, TArray<FStruct_ItemWithCount>*> myInventoriesList;
 
 public:
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	class UDataTable* ItemDatabase;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, meta = (DisplayName = "ItemDatabase"))
+	class UDataTable* myItemDatabase;
 
 
 };

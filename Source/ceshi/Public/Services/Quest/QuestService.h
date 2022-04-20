@@ -29,10 +29,10 @@ private:
 	void InitializeQuestLines();
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TArray<TSubclassOf<UQuestContextObject>> RegisteredQuestLines;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "RegisteredQuestLines"))
+	TArray<TSubclassOf<UQuestContextObject>> myRegisteredQuestLines;
 
 private:
 	UPROPERTY()
-	TArray<UQuestContextObject*> QuestLinesList;
+	TArray<UQuestContextObject*> myQuestLinesList;
 };

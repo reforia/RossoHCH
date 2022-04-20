@@ -30,7 +30,7 @@ public:
 	UFUNCTION()
 	void ShutdownServices();
 
-	TArray<UServiceBase*> GetServices() { return Services; };
+	TArray<UServiceBase*> GetServices() { return myServices; };
 
 	template<typename T> T* GetServiceByClassT() 
 	{
@@ -49,10 +49,10 @@ public:
 	}
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Service Manager")
-	TArray<TSubclassOf<UServiceBase>> RegisteredServiceList;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Service Manager", meta = (DisplayName = "RegisteredServiceList"))
+	TArray<TSubclassOf<UServiceBase>> myRegisteredServiceList;
 
 public:
 	UPROPERTY()
-	TArray<UServiceBase*> Services;
+	TArray<UServiceBase*> myServices;
 };

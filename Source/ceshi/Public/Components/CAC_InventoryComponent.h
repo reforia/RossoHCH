@@ -24,5 +24,17 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Inventory")
+	void InitializeInventoryComponent(FName inventoryID, UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category = "Inventory")
+	FName GetInventoryID() const { return myInventoryID; }
+
+private:
+	UFUNCTION()
+	void SetInventoryID(FName newID);
+
+private:
+	UPROPERTY()
+	FName myInventoryID;
 };

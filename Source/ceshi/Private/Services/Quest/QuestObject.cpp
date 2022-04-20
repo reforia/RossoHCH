@@ -4,14 +4,17 @@
 #include "Services/Quest/QuestObject.h"
 #include "DelayAction.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
+#include "GameplayUtil/FuncLib_GameplayUtil.h"
 
 void UQuestObject::SetCurrentQuestState(EQuestState newState)
 {
 	if (newState == GetCurrentQuestState())
 		return;
 
-	CurrentQuestState = newState;
-	// OnQuestStateChanged.Broadcast(CurrentQuestState);
+	myCurrentQuestState = newState;
+	// OnQuestStateChanged.Broadcast(myCurrentQuestState);
 }
 
 bool UQuestObject::GetQuestUnlockPrecondition_Implementation()
@@ -57,4 +60,18 @@ void UQuestObject::QuestDelay(float Duration, struct FLatentActionInfo LatentInf
 	{
 		UKismetSystemLibrary::Delay(this, Duration, LatentInfo);
 	}
+}
+
+APawn* UQuestObject::QuestGetPawnByID(FName charID)
+{
+	if (UWorld* World = this->GetWorld())
+	{
+		AActor* actor = UFuncLib_GameplayUtil::GetCharByID(charID, this);
+		APawn* pawn = Cast<APawn>(actor);
+		if (!pawn)
+			return nullptr;
+
+		return pawn;
+	}
+	return nullptr;
 }

@@ -5,7 +5,7 @@
 
 void UQuestContextObject::Tick(float DeltaTime)
 {
-	if (!ShouldTick)
+	if (!myShouldTick)
 		return;
 
 	UpdateCurrentQuestLineState();
@@ -13,12 +13,12 @@ void UQuestContextObject::Tick(float DeltaTime)
 
 UQuestContextObject::UQuestContextObject()
 {
-	QuestsInQuestLine = TMap<UQuestObject*, FStruct_QuestData>();
+	myQuestsInQuestLine = TMap<UQuestObject*, FStruct_QuestData>();
 }
 
 UQuestContextObject::~UQuestContextObject()
 {
-	QuestsInQuestLine.Empty();
+	myQuestsInQuestLine.Empty();
 }
 
 void UQuestContextObject::UpdateCurrentQuestLineState()
@@ -26,7 +26,7 @@ void UQuestContextObject::UpdateCurrentQuestLineState()
 	if (GetCurrentQuestLineState() == EQuestLineState::EV_Finished)
 		return;
 
-	if (QuestsInQuestLine.Num() <= 0)
+	if (myQuestsInQuestLine.Num() <= 0)
 		return;
 
 	uint32 lockedQuestCount = 0;
@@ -36,7 +36,7 @@ void UQuestContextObject::UpdateCurrentQuestLineState()
 	GetAllQuestObjects(allQuestList);
 	for (UQuestObject* QuestObj : allQuestList)
 	{
-		const FStruct_QuestData QuestDataRef = QuestsInQuestLine[QuestObj];
+		const FStruct_QuestData QuestDataRef = myQuestsInQuestLine[QuestObj];
 
 		if(!IsValid(QuestObj))
 			continue;
@@ -49,7 +49,7 @@ void UQuestContextObject::UpdateCurrentQuestLineState()
 		{
 			bool previousQuestAllCompleted = true;
 
-			for (FName questLinkedID : QuestDataRef.PreviousQuestsLinkedIDs)
+			for (FName questLinkedID : QuestDataRef.myPreviousQuestsLinkedIDs)
 			{
 				UQuestObject* previousQuestObjRef = GetQuestObjectByID(questLinkedID);
 				if (previousQuestObjRef)
@@ -92,9 +92,9 @@ void UQuestContextObject::UpdateCurrentQuestLineState()
 			lockedQuestCount++;
 	}
 
-	if (lockedQuestCount == QuestsInQuestLine.Num())
+	if (lockedQuestCount == myQuestsInQuestLine.Num())
 		SetCurrentQuestLineState(EQuestLineState::EV_Locked);
-	else if (finishedQuestCount == QuestsInQuestLine.Num())
+	else if (finishedQuestCount == myQuestsInQuestLine.Num())
 		SetCurrentQuestLineState(EQuestLineState::EV_Finished);
 	else
 		SetCurrentQuestLineState(EQuestLineState::EV_Unlocked);
@@ -103,7 +103,7 @@ void UQuestContextObject::UpdateCurrentQuestLineState()
 void UQuestContextObject::InitializeCurrentQuestLine()
 {
 	// Load Everything in the DB to the Quests List
-	if (!QuestLineDatabase)
+	if (!myQuestLineDatabase)
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, "Quest Line DB Not Assigned for Quest Context Object! ABORT EXECUTION");
@@ -111,15 +111,15 @@ void UQuestContextObject::InitializeCurrentQuestLine()
 	}
 
 	TArray<FStruct_QuestData*> tmpQuestsData;
-	QuestLineDatabase->GetAllRows<FStruct_QuestData>("", tmpQuestsData);
+	myQuestLineDatabase->GetAllRows<FStruct_QuestData>("", tmpQuestsData);
 
 	for (FStruct_QuestData* perQuestData : tmpQuestsData)
 	{
 		if (!perQuestData)
 			continue;
 
-		UQuestObject* questObj = NewObject<UQuestObject>(this, perQuestData->QuestObjectClass, NAME_None, RF_NoFlags, perQuestData->QuestObjectClass->GetDefaultObject(), true);
-		QuestsInQuestLine.Add(questObj, *perQuestData);
+		UQuestObject* questObj = NewObject<UQuestObject>(this, perQuestData->myQuestObjectClass, NAME_None, RF_NoFlags, perQuestData->myQuestObjectClass->GetDefaultObject(), true);
+		myQuestsInQuestLine.Add(questObj, *perQuestData);
 	}
 }
 
@@ -128,13 +128,13 @@ void UQuestContextObject::SetCurrentQuestLineState(EQuestLineState newState)
 	if (newState == GetCurrentQuestLineState())
 		return;
 
-	CurrentQuestLineState = newState;
-	OnQuestlineStateChanged.Broadcast(CurrentQuestLineState);
+	myCurrentQuestLineState = newState;
+	OnQuestlineStateChanged.Broadcast(myCurrentQuestLineState);
 }
 
 UQuestObject* UQuestContextObject::GetQuestObjectByID(FName ID)
 {
-	FStruct_QuestData* tmpQuestData = QuestLineDatabase->FindRow<FStruct_QuestData>(ID, "");
+	FStruct_QuestData* tmpQuestData = myQuestLineDatabase->FindRow<FStruct_QuestData>(ID, "");
 	if (!tmpQuestData)
 		return nullptr;
 
@@ -143,7 +143,7 @@ UQuestObject* UQuestContextObject::GetQuestObjectByID(FName ID)
 	GetAllQuestObjects(allQuests);
 	for (UQuestObject* questObject : allQuests)
 	{
-		if (QuestsInQuestLine[questObject] == *tmpQuestData)
+		if (myQuestsInQuestLine[questObject] == *tmpQuestData)
 			return questObject;
 	}
 
@@ -152,5 +152,5 @@ UQuestObject* UQuestContextObject::GetQuestObjectByID(FName ID)
 
 void UQuestContextObject::GetAllQuestObjects(TArray<UQuestObject*>& outQuestList)
 {
-	QuestsInQuestLine.GetKeys(outQuestList);
+	myQuestsInQuestLine.GetKeys(outQuestList);
 }

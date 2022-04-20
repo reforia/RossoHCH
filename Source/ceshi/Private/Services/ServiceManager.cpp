@@ -8,7 +8,7 @@
 
 UServiceManager::UServiceManager()
 {
-	Services = TArray<UServiceBase*>();
+	myServices = TArray<UServiceBase*>();
 }
 
 UServiceManager::~UServiceManager()
@@ -17,7 +17,7 @@ UServiceManager::~UServiceManager()
 
 void UServiceManager::InitializeServices()
 {
-	for (TSubclassOf<UServiceBase> service : RegisteredServiceList)
+	for (TSubclassOf<UServiceBase> service : myRegisteredServiceList)
 	{
 		if (!service->IsValidLowLevelFast()) { continue; }
 

@@ -13,24 +13,24 @@ UGI_Core::UGI_Core()
 
 void UGI_Core::ServicesInitialization()
 {
-	if (ServiceManagerClass)
+	if (myServiceManagerClass)
 	{
-		ServiceManagerRef = NewObject<UServiceManager>(this, ServiceManagerClass, NAME_None, RF_NoFlags, ServiceManagerClass->GetDefaultObject(), true);
-		ServiceManagerRef->InitializeServices();
+		myServiceManagerRef = NewObject<UServiceManager>(this, myServiceManagerClass, NAME_None, RF_NoFlags, myServiceManagerClass->GetDefaultObject(), true);
+		myServiceManagerRef->InitializeServices();
 	}
 }
 
 void UGI_Core::ServicesBeginPlay()
 {
-	if (ServiceManagerRef)
-		ServiceManagerRef->TriggerBeginPlayForServices();
+	if (myServiceManagerRef)
+		myServiceManagerRef->TriggerBeginPlayForServices();
 
 }
 
 void UGI_Core::ServicesShutdown()
 {
-	if (ServiceManagerRef)
-		ServiceManagerRef->ShutdownServices();
+	if (myServiceManagerRef)
+		myServiceManagerRef->ShutdownServices();
 }
 
 void UGI_Core::Init()

@@ -2,53 +2,52 @@
 
 
 #include "Services/Inventory/InventoryService.h"
-#include "Components/CAC_InventoryComponent.h"
 #include "Engine/Texture2D.h"
 #include "Services/ServiceManager.h"
 
 void UInventoryService::ServiceConstruction(UServiceManager* owner)
 {	
-	InventoriesList = TMap<UCAC_InventoryComponent*, TArray<FStruct_ItemWithCount>*>();
+	myInventoriesList = TMap<FName, TArray<FStruct_ItemWithCount>*>();
 	
 	UServiceBase::ServiceConstruction(owner);
 }
 
 void UInventoryService::ServiceShutdown()
 {
-	for (auto inventoryComp : GetListOfAllInventoryComps())
+	for (auto inventoryID : GetListOfAllInventoryIDs())
 	{
-		ResetIntentoryEntry(inventoryComp);
+		ResetIntentoryEntry(inventoryID);
 	}
-	InventoriesList.Reset();
+	myInventoriesList.Reset();
 }
 
-bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* inventoryCompRef, const FName itemID, const int32 count)
+bool UInventoryService::AddObjectIntoInventory(const FName inventoryID, const FName itemID, const int32 count)
 {
-	if(!inventoryCompRef || !DoesServiceContainComponent(inventoryCompRef))
+	if(!DoesServiceContainInventoryID(inventoryID))
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, "[CRITICAL ERROR] TRY ADD OBJECT TO INVENTORY BUT INVENTORY COMP NOT VALID (nullptr or Not Initialized)");
 		return false;
 	}
 
-	auto item = GetInventoryItemWithCountByComponent(inventoryCompRef, itemID);
+	auto item = GetInventoryItemWithCountByInventoryID(inventoryID, itemID);
 	if (!item)
 	{
 		// We need to add it into the array list
 		if (count <= 0)
 			return true;
 
-		auto itemsList = GetInventoryItemListByComponent(inventoryCompRef);
+		auto itemsList = GetInventoryItemListByInventoryID(inventoryID);
 		if (!itemsList)
 			return false;
 		
-		FStruct_Item* itemQueryData = ItemDatabase->FindRow<FStruct_Item>(itemID, "");
+		FStruct_Item* itemQueryData = myItemDatabase->FindRow<FStruct_Item>(itemID, "");
 		if (!itemQueryData)
 			return false;
 
 		const int unstackableCount = FMath::Clamp(count, 0, 1);
 		const int stackableCount = FMath::Max(count, 0);
-		const int finalCount = itemQueryData->Stackable ? stackableCount : unstackableCount;
+		const int finalCount = itemQueryData->myStackable ? stackableCount : unstackableCount;
 		FStruct_ItemWithCount tmpItemWithCount(itemQueryData, finalCount);
 
 		itemsList->Add(tmpItemWithCount);
@@ -57,24 +56,24 @@ bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* in
 	else
 	{
 		// We need to add the count up
-		int targetCount = item->Count + count;
+		int targetCount = item->myCount + count;
 		int unstackableCount = FMath::Clamp(targetCount, 0, 1);
 		int stackableCount = FMath::Max(targetCount, 0);
-		int finalCount = item->ItemRef.Stackable ? stackableCount : unstackableCount;
+		int finalCount = item->myItemRef.myStackable ? stackableCount : unstackableCount;
 		if (finalCount > 0)
 		{
 			// We are adding stuff to existing item
-			item->Count = finalCount;
+			item->myCount = finalCount;
 			return true;
 		}
 		else 
 		{
 			// We are clearing the array
-			auto currentItemsList = GetInventoryItemListByComponent(inventoryCompRef);
+			auto currentItemsList = GetInventoryItemListByInventoryID(inventoryID);
 			int32 index = 0;
 			for (auto &items : *currentItemsList)
 			{
-				if (items.ItemRef.ID == item->ItemRef.ID)
+				if (items.myItemRef.myID == item->myItemRef.myID)
 					break;
 				
 				index++;
@@ -90,38 +89,27 @@ bool UInventoryService::AddObjectIntoInventory(const UCAC_InventoryComponent* in
 	return false;
 }
 
-void UInventoryService::RegisterInventoryComponent(UCAC_InventoryComponent* inventoryCompRef)
+void UInventoryService::RegisterInventoryID(FName inventoryID)
 {
-	if (DoesServiceContainComponent(inventoryCompRef))
+	if (DoesServiceContainInventoryID(inventoryID))
 		return; // Already Registered before
 
-	InventoriesList.Add(inventoryCompRef, new TArray<FStruct_ItemWithCount>());
-}
-
-void UInventoryService::ShutDownInventoryComponent(UCAC_InventoryComponent* inventoryCompRef)
-{
-	if (!inventoryCompRef)
-		return;
-
-	if (!DoesServiceContainComponent(inventoryCompRef))
-		return;
-
-	ResetIntentoryEntry(inventoryCompRef);
+	myInventoriesList.Add(inventoryID, new TArray<FStruct_ItemWithCount>());
 }
 
 FString UInventoryService::GetDebugLogInfo()
 {
 	FString result;
 	result = "-----INVENTORY Debug Log-----\n";
-	for (UCAC_InventoryComponent* compRef : GetListOfAllInventoryComps())
+	for (FName inventoryID : GetListOfAllInventoryIDs())
 	{
-		result = result + "Comp Owner: " + compRef->GetOwner()->GetName() + "\n";
-		for (FStruct_ItemWithCount& itemsList : *GetInventoryItemListByComponent(compRef))
+		result = result + "Inventory ID: " + inventoryID.ToString() + "\n";
+		for (FStruct_ItemWithCount& itemsList : *GetInventoryItemListByInventoryID(inventoryID))
 		{
 			result += "-----------------------\n";
-			result = result + "Name: " + itemsList.ItemRef.Name.ToString();
+			result = result + "Name: " + itemsList.myItemRef.myName.ToString();
 			result = result + "Count: ";
-			result.AppendInt(itemsList.Count);
+			result.AppendInt(itemsList.myCount);
 			result += "\n";
 		}
 	}
@@ -129,85 +117,72 @@ FString UInventoryService::GetDebugLogInfo()
 	return result;
 }
 
-TArray<UCAC_InventoryComponent*> UInventoryService::GetListOfAllInventoryComps()
+bool UInventoryService::DoesServiceContainInventoryID(const FName inventoryID)
 {
-	TArray<UCAC_InventoryComponent*> result;
+	return GetListOfAllInventoryIDs().Contains(inventoryID);
+}
 
-	int32 a = InventoriesList.Num();
+TArray<FName> UInventoryService::GetListOfAllInventoryIDs()
+{
+	TArray<FName> result;
+
+	int32 a = myInventoriesList.Num();
 	if (a == 0)
 		return result;
 
-	InventoriesList.GetKeys(result);
+	myInventoriesList.GetKeys(result);
 	return result;
 }
 
-bool UInventoryService::DoesServiceContainComponent(const UCAC_InventoryComponent* inventoryCompRef)
+void UInventoryService::ResetIntentoryEntry(FName inventoryID)
 {
-	return GetListOfAllInventoryComps().Contains(inventoryCompRef);
-}
-
-void UInventoryService::ClearIllegalInventoriesEntries()
-{
-	for (auto inventoryComp : GetListOfAllInventoryComps())
-	{
-		if(!IsValid(inventoryComp))
-			
-			InventoriesList[inventoryComp] = nullptr;
-	}
-}
-
-void UInventoryService::ResetIntentoryEntry(UCAC_InventoryComponent* CompRef)
-{
-	if (!CompRef)
+	if (!DoesServiceContainInventoryID(inventoryID))
 		return;
-
-	delete InventoriesList[CompRef];
-	InventoriesList[CompRef] = nullptr;
-	InventoriesList.Remove(CompRef);
+	
+	delete myInventoriesList[inventoryID];
+	myInventoriesList[inventoryID] = nullptr;
+	myInventoriesList.Remove(inventoryID);
 }
 
-TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByComponent(const UCAC_InventoryComponent* inventoryCompRef)
+TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByInventoryID(const FName inventoryID)
 {
-	if (!DoesServiceContainComponent(inventoryCompRef))
+	if (!DoesServiceContainInventoryID(inventoryID))
 		return nullptr;
 
-	return InventoriesList[inventoryCompRef];
+	return myInventoriesList[inventoryID];
 }
 
-FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID)
+FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByInventoryID(const FName inventoryID, FName ItemID)
 {
-	if (!inventoryCompRef)
+	if (!myItemDatabase)
 		return nullptr;
 
-	if (!ItemDatabase)
-		return nullptr;
-
-	FStruct_Item* queryItemResult = ItemDatabase->FindRow<FStruct_Item>(ItemID, "");
+	FStruct_Item* queryItemResult = myItemDatabase->FindRow<FStruct_Item>(ItemID, "");
 
 	if (!queryItemResult)
 		return nullptr;
 
-	auto inventoryItemsList = GetInventoryItemListByComponent(inventoryCompRef);
+	auto inventoryItemsList = GetInventoryItemListByInventoryID(inventoryID);
 	if (!inventoryItemsList)
 		return nullptr;
 
 	for (auto& items : *inventoryItemsList)
 	{
-		if (items.ItemRef.ID == queryItemResult->ID)
+		if (items.myItemRef.myID == queryItemResult->myID)
 			return &items;
 	}
 
 	return nullptr;
 }
 
-FStruct_Item* UInventoryService::GetInventoryItemByComponent(const UCAC_InventoryComponent* inventoryCompRef, FName ItemID)
+FStruct_Item* UInventoryService::GetInventoryItemByInventoryID(const FName inventoryID, FName itemID)
 {
-	auto items = GetInventoryItemWithCountByComponent(inventoryCompRef, ItemID);
+	auto items = GetInventoryItemWithCountByInventoryID(inventoryID, itemID);
 
 	if (!items)
 		return nullptr;
 
-	return &items->ItemRef;
+	return &items->myItemRef;
 }
 
 

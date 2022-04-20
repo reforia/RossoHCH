@@ -21,7 +21,7 @@ FString UServiceBase::GetDebugLogInfo()
 void UServiceBase::ServiceConstruction(UServiceManager* owner)
 {
 	if (owner)
-		owner->Services.Add(this);
+		owner->myServices.Add(this);
 }
 
 void UServiceBase::ServiceBeginPlay()
