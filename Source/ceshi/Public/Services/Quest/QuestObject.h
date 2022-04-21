@@ -33,11 +33,11 @@ public:
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestStateChangedEvent, EQuestState, newQuestState);
 
-class APawn;
+class AActor;
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, meta = (ShowWorldContextPin))
 class CESHI_API UQuestObject : public UObject
 {
 	GENERATED_BODY()
@@ -58,13 +58,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CompleteQuest(bool Succeeded = true);
 
-	class UWorld* GetWorld() const override;
+	virtual UWorld* GetWorld() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Quest|Utilities", meta = (Latent, LatentInfo = "LatentInfo", Duration = "0.2", Keywords = "sleep"))
 	void QuestDelay(float Duration, struct FLatentActionInfo LatentInfo);
 
 	UFUNCTION(BlueprintPure, Category = "Quest|Utilities")
-	APawn* QuestGetPawnByID(FName charID);
+	UObject* QuestGetWorldContext() { return this; }
+
+	UFUNCTION(BlueprintPure, Category = "Quest|Utilities")
+	AActor* QuestGetCharActorByID(FName charID);
 
 public:
 	UPROPERTY(BlueprintAssignable)

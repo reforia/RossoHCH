@@ -4,7 +4,6 @@
 #include "Services/Quest/QuestObject.h"
 #include "DelayAction.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "GameFramework/Pawn.h"
 #include "GameFramework/Actor.h"
 #include "GameplayUtil/FuncLib_GameplayUtil.h"
 
@@ -31,9 +30,8 @@ void UQuestObject::CompleteQuest(bool Succeeded)
 	SetCurrentQuestState(Succeeded ? EQuestState::EV_Succeeded : EQuestState::EV_Failed);
 }
 
-class UWorld* UQuestObject::GetWorld() const
+UWorld* UQuestObject::GetWorld() const
 {
-	Super::GetWorld();
 	UObject* Outer = GetOuter();
 
 	while (Outer)
@@ -62,16 +60,15 @@ void UQuestObject::QuestDelay(float Duration, struct FLatentActionInfo LatentInf
 	}
 }
 
-APawn* UQuestObject::QuestGetPawnByID(FName charID)
+AActor* UQuestObject::QuestGetCharActorByID(FName charID)
 {
 	if (UWorld* World = this->GetWorld())
 	{
 		AActor* actor = UFuncLib_GameplayUtil::GetCharByID(charID, this);
-		APawn* pawn = Cast<APawn>(actor);
-		if (!pawn)
+		if (!actor)
 			return nullptr;
 
-		return pawn;
+		return actor;
 	}
 	return nullptr;
 }

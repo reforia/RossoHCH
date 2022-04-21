@@ -37,3 +37,8 @@ void UServiceManager::ShutdownServices()
 		service->ServiceShutdown();
 }
 
+UWorld* UServiceManager::GetWorld() const
+{
+	return myCurrentActiveWorld;
+}
+

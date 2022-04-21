@@ -20,6 +20,8 @@ FString UServiceBase::GetDebugLogInfo()
 
 void UServiceBase::ServiceConstruction(UServiceManager* owner)
 {
+	SetOwner(owner);
+
 	if (owner)
 		owner->myServices.Add(this);
 }
@@ -32,4 +34,12 @@ void UServiceBase::ServiceBeginPlay()
 void UServiceBase::ServiceShutdown()
 {
 
+}
+
+UWorld* UServiceBase::GetWorld() const
+{
+	if(myServiceManagerOwner)
+		return myServiceManagerOwner->GetWorld();
+
+	return nullptr;
 }

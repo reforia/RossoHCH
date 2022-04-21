@@ -48,6 +48,10 @@ void UGI_Core::Shutdown()
 void UGI_Core::OnWorldInitialized(const UWorld::FActorsInitializedParams& param)
 {
 	if (param.World)
+	{
+		if (myServiceManagerRef)
+			myServiceManagerRef->SetCurrentActiveWorld(param.World);
 		param.World->OnWorldBeginPlay.AddUObject(this, &UGI_Core::ServicesBeginPlay);
+	}
 }
 
