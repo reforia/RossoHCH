@@ -38,5 +38,8 @@ public:
 	static UCharService* GetCharService(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static UDialogueService* GetDialogueService(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static AActor* GetCharByID(const FName charID, const UObject* WorldContextObject);
 };

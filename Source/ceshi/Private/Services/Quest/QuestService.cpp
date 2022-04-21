@@ -47,6 +47,18 @@ FString UQuestService::GetDebugLogInfo()
 	return result;
 }
 
+void UQuestService::TryCompleteQuest(UDataTable* dataTable, FName questID, bool success)
+{
+	for (UQuestContextObject* questLines : myQuestLinesList)
+	{
+		if (questLines->myQuestLineDatabase == dataTable)
+		{
+			questLines->RequestCompleteQuestByID(questID, success);
+			return;
+		}
+	}
+}
+
 void UQuestService::ServiceShutdown()
 {
 	for (UQuestContextObject* questLine : myQuestLinesList)

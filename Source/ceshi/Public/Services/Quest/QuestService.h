@@ -24,6 +24,9 @@ public:
 
 	FString GetDebugLogInfo() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Quest")
+	void TryCompleteQuest(UDataTable* dataTable, FName questID, bool success = true);
+
 private:
 	UFUNCTION()
 	void InitializeQuestLines();

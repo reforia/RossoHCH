@@ -40,6 +40,9 @@ public:
 	UFUNCTION()
 		void GetAllQuestObjects(TArray<UQuestObject*>& outQuestList);
 
+	UFUNCTION()
+		void RequestCompleteQuestByID(FName questID, bool success = true);
+
 	// Tick-able Interface
 	TStatId GetStatId() const override { return Super::GetStatID(); };
 

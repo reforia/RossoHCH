@@ -154,3 +154,15 @@ void UQuestContextObject::GetAllQuestObjects(TArray<UQuestObject*>& outQuestList
 {
 	myQuestsInQuestLine.GetKeys(outQuestList);
 }
+
+void UQuestContextObject::RequestCompleteQuestByID(FName questID, bool success)
+{
+	UQuestObject* questObj = GetQuestObjectByID(questID);
+	if (!questObj)
+		return;
+	
+	if (questObj->GetCurrentQuestState() != EQuestState::EV_InProgress)
+		return;
+
+	questObj->CompleteQuest(success);
+}

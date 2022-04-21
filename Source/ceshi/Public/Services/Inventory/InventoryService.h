@@ -153,6 +153,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Construction")
 	void RegisterInventoryID(FName inventoryID);
 
+	UFUNCTION(BlueprintPure, Category = "ItemOperation")
+	int32 GetItemCountByID(FName inventoryID, FName itemID);
+
 	FString GetDebugLogInfo() override;
 
 	void ServiceConstruction(UServiceManager* owner) override;

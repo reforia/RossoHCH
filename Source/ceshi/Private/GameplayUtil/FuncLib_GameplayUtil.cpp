@@ -6,6 +6,7 @@
 #include "Services/Inventory/InventoryService.h"
 #include "Services/Quest/QuestService.h"
 #include "Services/Char/CharService.h"
+#include "Services/Dialogue/DialogueService.h"
 #include "../GameplayCore/GI_Core.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -49,6 +50,15 @@ UCharService* UFuncLib_GameplayUtil::GetCharService(const UObject* WorldContextO
 		return nullptr;
 
 	return SMRef->GetServiceByClassT<UCharService>();
+}
+
+UDialogueService* UFuncLib_GameplayUtil::GetDialogueService(const UObject* WorldContextObject)
+{
+	UServiceManager* SMRef = GetServiceManager(WorldContextObject);
+	if (!SMRef)
+		return nullptr;
+
+	return SMRef->GetServiceByClassT<UDialogueService>();
 }
 
 AActor* UFuncLib_GameplayUtil::GetCharByID(const FName charID, const UObject* WorldContextObject)

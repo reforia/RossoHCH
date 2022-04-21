@@ -28,6 +28,7 @@ void UQuestObject::CompleteQuest(bool Succeeded)
 		return;
 
 	SetCurrentQuestState(Succeeded ? EQuestState::EV_Succeeded : EQuestState::EV_Failed);
+	OnQuestCompleted(Succeeded);
 }
 
 UWorld* UQuestObject::GetWorld() const

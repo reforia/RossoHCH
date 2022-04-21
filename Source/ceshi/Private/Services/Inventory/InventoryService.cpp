@@ -97,6 +97,15 @@ void UInventoryService::RegisterInventoryID(FName inventoryID)
 	myInventoriesList.Add(inventoryID, new TArray<FStruct_ItemWithCount>());
 }
 
+int32 UInventoryService::GetItemCountByID(FName inventoryID, FName itemID)
+{
+	FStruct_ItemWithCount* itemWithCount = GetInventoryItemWithCountByInventoryID(inventoryID, itemID);
+	if (itemWithCount)
+		return itemWithCount->myCount;
+
+	return 0;
+}
+
 FString UInventoryService::GetDebugLogInfo()
 {
 	FString result;

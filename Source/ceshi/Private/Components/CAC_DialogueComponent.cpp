@@ -2,6 +2,7 @@
 
 
 #include "Components/CAC_DialogueComponent.h"
+#include "GameplayUtil/FuncLib_GameplayUtil.h"
 
 // Sets default values for this component's properties
 UCAC_DialogueComponent::UCAC_DialogueComponent()
@@ -30,5 +31,22 @@ void UCAC_DialogueComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UCAC_DialogueComponent::InitializeDialogueComponent(FName DialogueActorID, UObject* WorldContextObject)
+{
+	SetDialogueActorID(DialogueActorID);
+	UDialogueService* dialogueService = UFuncLib_GameplayUtil::GetDialogueService(WorldContextObject);
+
+	if (dialogueService)
+		dialogueService->RegisterDialogueData(GetDialogueActorID(), myDialogueActorData);
+}
+
+void UCAC_DialogueComponent::SetDialogueActorID(FName newID)
+{
+	if (myDialogueActorID == newID)
+		return;
+
+	myDialogueActorID = newID;
 }
 

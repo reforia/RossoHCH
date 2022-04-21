@@ -55,6 +55,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnQuestBegin();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnQuestCompleted(bool Succeeded);
+
 	UFUNCTION(BlueprintCallable)
 	void CompleteQuest(bool Succeeded = true);
 
