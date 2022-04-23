@@ -36,8 +36,8 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TSubclassOf<UServiceManager> ServiceManagerClass;
+	TSubclassOf<UServiceManager> myServiceManagerClass;
 
 	UPROPERTY()
-	UServiceManager* ServiceManagerRef;
+	UServiceManager* myServiceManagerRef;
 };

@@ -30,7 +30,10 @@ public:
 	UFUNCTION()
 	void ShutdownServices();
 
-	TArray<UServiceBase*> GetServices() { return Services; };
+	UFUNCTION()
+	void SetCurrentActiveWorld(UWorld* newWorld) {if(newWorld == myCurrentActiveWorld) return; myCurrentActiveWorld = newWorld; };
+
+	TArray<UServiceBase*> GetServices() { return myServices; };
 
 	template<typename T> T* GetServiceByClassT() 
 	{
@@ -48,11 +51,18 @@ public:
 		return (T*)nullptr;
 	}
 
+
+	virtual UWorld* GetWorld() const override;
+
 public:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Service Manager")
-	TArray<TSubclassOf<UServiceBase>> RegisteredServiceList;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Service Manager", meta = (DisplayName = "RegisteredServiceList"))
+	TArray<TSubclassOf<UServiceBase>> myRegisteredServiceList;
 
 public:
 	UPROPERTY()
-	TArray<UServiceBase*> Services;
+	TArray<UServiceBase*> myServices;
+
+private:
+	UPROPERTY()
+	UWorld* myCurrentActiveWorld;
 };

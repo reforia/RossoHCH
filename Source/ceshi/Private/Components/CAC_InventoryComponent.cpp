@@ -2,6 +2,8 @@
 
 
 #include "Components/CAC_InventoryComponent.h"
+#include "Services/Inventory/InventoryService.h"
+#include "GameplayUtil/FuncLib_GameplayUtil.h"
 
 // Sets default values for this component's properties
 UCAC_InventoryComponent::UCAC_InventoryComponent()
@@ -32,3 +34,19 @@ void UCAC_InventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
+void UCAC_InventoryComponent::InitializeInventoryComponent(FName inventoryID, UObject* WorldContextObject)
+{
+	SetInventoryID(inventoryID);
+	UInventoryService* invService = UFuncLib_GameplayUtil::GetInventoryService(WorldContextObject);
+
+	if (invService)
+		invService->RegisterInventoryID(inventoryID);
+}
+
+void UCAC_InventoryComponent::SetInventoryID(FName newID)
+{
+	if (myInventoryID == newID)
+		return;
+
+	myInventoryID = newID;
+}

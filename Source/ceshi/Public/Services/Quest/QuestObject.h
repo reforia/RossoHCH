@@ -6,7 +6,6 @@
 #include "UObject/NoExportTypes.h"
 #include "Services/Quest/QuestType.h"
 #include "Tickable.h"
-#include "GameplayTaskOwnerInterface.h"
 #include "QuestObject.generated.h"
 
 USTRUCT(BlueprintType)
@@ -16,35 +15,36 @@ struct FStruct_QuestData : public FTableRowBase
 
 public:
 	FStruct_QuestData()
-		: QuestObjectClass(TSubclassOf<UQuestObject>()), PreviousQuestsLinkedIDs(TArray<FName>())
+		: myQuestObjectClass(TSubclassOf<UQuestObject>()), myPreviousQuestsLinkedIDs(TArray<FName>())
 	{}
 
 	bool operator==(const FStruct_QuestData& other) const
 	{
-		return QuestObjectClass == other.QuestObjectClass
-			&& PreviousQuestsLinkedIDs == other.PreviousQuestsLinkedIDs;
+		return myQuestObjectClass == other.myQuestObjectClass
+			&& myPreviousQuestsLinkedIDs == other.myPreviousQuestsLinkedIDs;
 	}
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-		TSubclassOf<UQuestObject> QuestObjectClass;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "QuestObjectClass"))
+	TSubclassOf<UQuestObject> myQuestObjectClass;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-		TArray<FName> PreviousQuestsLinkedIDs;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "PreviousQuestsLinkedIDs"))
+	TArray<FName> myPreviousQuestsLinkedIDs;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestStateChangedEvent, EQuestState, newQuestState);
 
+class AActor;
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, meta = (ShowWorldContextPin))
 class CESHI_API UQuestObject : public UObject
 {
 	GENERATED_BODY()
 	
 public:
 	UFUNCTION(BlueprintPure)
-		EQuestState GetCurrentQuestState() const {return CurrentQuestState;}
+		EQuestState GetCurrentQuestState() const {return myCurrentQuestState;}
 
 	UFUNCTION()
 		void SetCurrentQuestState(EQuestState newState);
@@ -55,13 +55,22 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnQuestBegin();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnQuestCompleted(bool Succeeded);
+
 	UFUNCTION(BlueprintCallable)
 	void CompleteQuest(bool Succeeded = true);
 
-	class UWorld* GetWorld() const override;
+	virtual UWorld* GetWorld() const override;
 
-	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
-		bool GetTest(const UObject* WorldContextObject) {return true;};
+	UFUNCTION(BlueprintCallable, Category = "Quest|Utilities", meta = (Latent, LatentInfo = "LatentInfo", Duration = "0.2", Keywords = "sleep"))
+	void QuestDelay(float Duration, struct FLatentActionInfo LatentInfo);
+
+	UFUNCTION(BlueprintPure, Category = "Quest|Utilities")
+	UObject* QuestGetWorldContext() { return this; }
+
+	UFUNCTION(BlueprintPure, Category = "Quest|Utilities")
+	AActor* QuestGetCharActorByID(FName charID);
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -69,5 +78,5 @@ public:
 
 private:
 	UPROPERTY()
-	EQuestState CurrentQuestState;
+	EQuestState myCurrentQuestState;
 };

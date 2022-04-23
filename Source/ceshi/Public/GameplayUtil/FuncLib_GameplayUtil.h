@@ -10,6 +10,8 @@ class UGI_Core;
 class UServiceManager;
 class UInventoryService;
 class UQuestService;
+class UCharService;
+class APawn;
 
 /**
  * 
@@ -31,4 +33,13 @@ public:
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static UQuestService* GetQuestService(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static UCharService* GetCharService(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static UDialogueService* GetDialogueService(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static AActor* GetCharByID(const FName charID, const UObject* WorldContextObject);
 };

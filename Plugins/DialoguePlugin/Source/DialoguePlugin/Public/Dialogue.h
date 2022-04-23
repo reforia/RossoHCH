@@ -5,6 +5,7 @@
 #include "Dialogue.generated.h"
 
 class UDialogue;
+class UDataTable;
 // Extend this class to add custom events
 UCLASS(Blueprintable, BlueprintType, abstract, EditInlineNew, HideCategories = ("DoNotShow"), CollapseCategories, AutoExpandCategories = ("Default"))
 class DIALOGUEPLUGIN_API UDialogueEvents : public UObject

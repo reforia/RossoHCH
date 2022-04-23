@@ -24,15 +24,18 @@ public:
 
 	FString GetDebugLogInfo() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Quest")
+	void TryCompleteQuest(UDataTable* dataTable, FName questID, bool success = true);
+
 private:
 	UFUNCTION()
 	void InitializeQuestLines();
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TArray<TSubclassOf<UQuestContextObject>> RegisteredQuestLines;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "RegisteredQuestLines"))
+	TArray<TSubclassOf<UQuestContextObject>> myRegisteredQuestLines;
 
 private:
 	UPROPERTY()
-	TArray<UQuestContextObject*> QuestLinesList;
+	TArray<UQuestContextObject*> myQuestLinesList;
 };

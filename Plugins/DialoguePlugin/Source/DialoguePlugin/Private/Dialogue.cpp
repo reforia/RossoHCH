@@ -1,6 +1,7 @@
 #include "Dialogue.h"
 #include "Runtime/Core/Public/Misc/OutputDeviceNull.h"
 #include "Engine/GameInstance.h"
+#include "Engine/DataTable.h"
 #include "DialoguePluginPrivatePCH.h"
 
 UDialogue::UDialogue(const FObjectInitializer& ObjectInitializer)

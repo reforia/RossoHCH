@@ -26,7 +26,7 @@ public:
 	virtual ~UQuestContextObject();
 
 	UFUNCTION(BlueprintPure)
-		const EQuestLineState GetCurrentQuestLineState() { return CurrentQuestLineState; }
+		const EQuestLineState GetCurrentQuestLineState() { return myCurrentQuestLineState; }
 
 	UFUNCTION()
 		void UpdateCurrentQuestLineState();
@@ -39,6 +39,9 @@ public:
 
 	UFUNCTION()
 		void GetAllQuestObjects(TArray<UQuestObject*>& outQuestList);
+
+	UFUNCTION()
+		void RequestCompleteQuestByID(FName questID, bool success = true);
 
 	// Tick-able Interface
 	TStatId GetStatId() const override { return Super::GetStatID(); };
@@ -53,19 +56,19 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	class UDataTable* QuestLineDatabase;
+	class UDataTable* myQuestLineDatabase;
 
 	UPROPERTY()
-	bool ShouldTick = false;
+	bool myShouldTick = false;
 
 private:
 	UPROPERTY()
-		EQuestLineState CurrentQuestLineState = EQuestLineState::EV_Locked;
+		EQuestLineState myCurrentQuestLineState = EQuestLineState::EV_Locked;
 
 	UPROPERTY(BlueprintAssignable)
 		FOnQuestlineStateChangedEvent OnQuestlineStateChanged;
 
 	UPROPERTY()
-	TMap<UQuestObject*, FStruct_QuestData> QuestsInQuestLine = TMap<UQuestObject*, FStruct_QuestData>();
+	TMap<UQuestObject*, FStruct_QuestData> myQuestsInQuestLine = TMap<UQuestObject*, FStruct_QuestData>();
 
 };

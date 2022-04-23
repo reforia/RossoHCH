@@ -29,4 +29,13 @@ public:
 
 	UFUNCTION()
 	virtual void ServiceShutdown();
+
+	UFUNCTION()
+	void SetOwner(UServiceManager* newSM) { if (myServiceManagerOwner == newSM) return; myServiceManagerOwner = newSM; };
+
+	UWorld* GetWorld() const override;
+
+private:
+	UPROPERTY()
+	UServiceManager* myServiceManagerOwner;
 };
