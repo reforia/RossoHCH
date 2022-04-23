@@ -68,7 +68,7 @@ public:
 	UDialogue* GetOverrideDialogueByDialogueActorID(FName dialogueActorID);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Dialogue")
-	void PlayDialogueForDialogueActorID(FName dialogueActorID);
+	void PlayDialogueForDialogueActorID(FName dialogueActorID, FName leftCharID, FName rightCharID);
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void SetOverrideDialogueToDialogueActor(FName dialogueActorID, FName overrideDialogueID);

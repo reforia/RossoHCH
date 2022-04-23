@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "CharService.generated.h"
 
+class UTexture2D;
 
 USTRUCT(BlueprintType)
 struct FStruct_CharData : public FTableRowBase
@@ -19,6 +20,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Char", meta = (DisplayName = "CharName"))
 	FName myCharName;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Char", meta = (DisplayName = "CharTex"))
+	UTexture2D* myCharTex;
 };
 
 class AActor;
