@@ -4,6 +4,7 @@
 #include "Services/Quest/QuestService.h"
 #include "Services/Quest/QuestContextObject.h"
 
+
 void UQuestService::ServiceConstruction(UServiceManager* owner)
 {
 	// Load All Quest Lines Data
@@ -84,4 +85,36 @@ void UQuestService::InitializeQuestLines()
 			myQuestLinesList.Add(newQuestLineObj);
 		}
 	}
+}
+
+TArray<FStruct_QuestData> UQuestService::GetAllQuests()
+{
+	TArray<FStruct_QuestData> allQuests;
+
+	for (UQuestContextObject* questContextObj : myQuestLinesList)
+	{
+		if (!IsValid(questContextObj))
+			continue;
+
+		TArray<FStruct_QuestData> tmpQuestsData;
+		questContextObj->GetAllQuestsData(tmpQuestsData);
+		allQuests.Append(tmpQuestsData);
+	}
+	return allQuests;
+}
+
+TArray<FStruct_QuestData> UQuestService::GetAllActiveQuests()
+{
+	TArray<FStruct_QuestData> allQuests;
+
+	for (UQuestContextObject* questContextObj : myQuestLinesList)
+	{
+		if (!IsValid(questContextObj))
+			continue;
+
+		TArray<FStruct_QuestData> tmpQuestsData;
+		questContextObj->GetAllActiveQuestsData(tmpQuestsData);
+		allQuests.Append(tmpQuestsData);
+	}
+	return allQuests;
 }

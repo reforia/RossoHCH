@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Services/ServiceBase.h"
+#include "Services/Quest/QuestObject.h"
 #include "QuestService.generated.h"
 
 class UQuestContextObject;
+class UQuestObject;
+
 /**
  * 
  */
@@ -30,6 +33,12 @@ public:
 private:
 	UFUNCTION()
 	void InitializeQuestLines();
+
+	UFUNCTION(BlueprintPure, Category = "Quest")
+	TArray<FStruct_QuestData> GetAllQuests();
+
+	UFUNCTION(BlueprintPure, Category = "Quest")
+	TArray<FStruct_QuestData> GetAllActiveQuests();
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "RegisteredQuestLines"))
