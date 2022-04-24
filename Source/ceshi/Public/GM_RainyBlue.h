@@ -12,6 +12,7 @@ enum class EGameplayState : uint8 {
 	EV_InCinematic UMETA(DisplayName = "InCinematic"),
 	EV_InDialogue UMETA(DisplayName = "InDialogue"),
 	EV_InMiniGame UMETA(DisplayName = "InMiniGame"),
+	EV_PreGameState UMETA(DisplayName = "PreGameState"),
 	EV_UNDEFINED UMETA(DisplayName = "UNDEFINED")
 };
 
