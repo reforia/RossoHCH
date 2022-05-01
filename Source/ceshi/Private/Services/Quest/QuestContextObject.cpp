@@ -166,3 +166,22 @@ void UQuestContextObject::RequestCompleteQuestByID(FName questID, bool success)
 
 	questObj->CompleteQuest(success);
 }
+
+void UQuestContextObject::GetAllQuestsData(TArray<FStruct_QuestData>& outQuestData)
+{
+	TArray<UQuestObject*> allQuests;
+	GetAllQuestObjects(allQuests);
+	for (UQuestObject* questObject : allQuests)
+		outQuestData.Add(myQuestsInQuestLine[questObject]);
+}
+
+void UQuestContextObject::GetAllActiveQuestsData(TArray<FStruct_QuestData>& outQuestData)
+{
+	TArray<UQuestObject*> allQuests;
+	GetAllQuestObjects(allQuests);
+	for (UQuestObject* questObject : allQuests)
+	{
+		if(questObject->GetCurrentQuestState() == EQuestState::EV_InProgress)
+			outQuestData.Add(myQuestsInQuestLine[questObject]);
+	}
+}

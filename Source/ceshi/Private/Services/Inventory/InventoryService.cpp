@@ -161,6 +161,16 @@ TArray<FStruct_ItemWithCount>* UInventoryService::GetInventoryItemListByInventor
 	return myInventoriesList[inventoryID];
 }
 
+TArray<FStruct_ItemWithCount> UInventoryService::BPGetInventoryItemListByInventoryID(const FName inventoryID)
+{
+	TArray<FStruct_ItemWithCount> result;
+	
+	TArray<FStruct_ItemWithCount>* resultPtr = GetInventoryItemListByInventoryID(inventoryID);
+	if (resultPtr)
+		result = *resultPtr;
+	return result;
+}
+
 FStruct_ItemWithCount* UInventoryService::GetInventoryItemWithCountByInventoryID(const FName inventoryID, FName ItemID)
 {
 	if (!myItemDatabase)

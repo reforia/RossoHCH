@@ -43,6 +43,12 @@ public:
 	UFUNCTION()
 		void RequestCompleteQuestByID(FName questID, bool success = true);
 
+	UFUNCTION()
+		void GetAllQuestsData(TArray<FStruct_QuestData>& outQuestData);
+
+	UFUNCTION()
+		void GetAllActiveQuestsData(TArray<FStruct_QuestData>& outQuestData);
+
 	// Tick-able Interface
 	TStatId GetStatId() const override { return Super::GetStatID(); };
 

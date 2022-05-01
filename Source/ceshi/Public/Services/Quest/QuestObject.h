@@ -27,6 +27,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "QuestObjectClass"))
 	TSubclassOf<UQuestObject> myQuestObjectClass;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "QuestName"))
+	FText myQuestName;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "QuestDesc"))
+	FText myQuestDesc;
+
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (DisplayName = "PreviousQuestsLinkedIDs"))
 	TArray<FName> myPreviousQuestsLinkedIDs;
 };

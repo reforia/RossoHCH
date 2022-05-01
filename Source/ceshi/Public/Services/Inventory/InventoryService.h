@@ -131,10 +131,10 @@ public:
 		return myItemRef == other.myItemRef && myCount == other.myCount;
 	}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (DisplayName = "ItemRef"))
 	FStruct_Item myItemRef;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (DisplayName = "Count"))
 	int32 myCount;
 };
 
@@ -163,7 +163,7 @@ public:
 	void ServiceShutdown() override;
 
 private:
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	TArray<FName> GetListOfAllInventoryIDs();
 
 	UFUNCTION()
@@ -173,6 +173,9 @@ private:
 	void ResetIntentoryEntry(FName inventoryID);
 
 	TArray<FStruct_ItemWithCount>* GetInventoryItemListByInventoryID(const FName inventoryID);
+
+	UFUNCTION(BlueprintPure, Category = "Inventory")
+	TArray<FStruct_ItemWithCount> BPGetInventoryItemListByInventoryID(const FName inventoryID);
 
 	FStruct_ItemWithCount* GetInventoryItemWithCountByInventoryID(const FName inventoryID, FName itemID);
 
